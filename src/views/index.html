@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Node.js upload images</title>
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <style>
+      div.preview-images > img {
+        width: 30%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+
+        <div class="section">
+          <h4>Pin a polluted zone</h4>
+
+          <form
+            action="/upload"
+            method="POST"
+            enctype="multipart/form-data"
+            class="section"
+          >
+             <div class="file-field input-field">
+               <div class="btn">
+                <span>Image</span>
+                  <input
+                  type="file"
+                  name="file"
+                  id="input-files"
+                  class="form-control-file border"
+                />
+              </div>
+              <div class="file-path-wrapper">
+              <input class="file-path validate" type="text">
+            </div>   
+            <div class="row">
+        <div class="input-field col s6">
+          <input id="latitude" type="number" class="validate" name="latitude" step="any">
+          <label for="latitude">Latitude</label>
+          <span class="helper-text" data-error="wrong" data-success="right">Latitude</span>
+        </div>
+          <div class="input-field col s6">
+          <input id="longitude" type="number" class="validate" name="longitude" step="any">
+          <label for="longitude">Longitude</label>
+          <span class="helper-text" data-error="wrong" data-success="right">Latitude</span>
+        </div>
+            <div class="gird">
+              <div class="row">
+                <div class="section">
+                  <button type="submit" class="waves-effect waves-light btn-large col s4">Submit</button>
+                </div>
+                <div class="section">
+                  <a class="waves-effect waves-light btn-large col s4" id="geo">Get Coords</a>
+                </div>
+                <div class="section">
+                  
+                </div>
+              </div>
+            </div>
+          </form>
+          <form action="/all" method="get">
+                    <button class="waves-effect waves-light btn-large col s4" id="all">View All</button>
+                  </form>
+        </div>
+      </div>      
+      <hr />
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="preview-images"></div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+
+      // display preview
+
+      $(document).ready(function () {
+        let imagesPreview = function (input, placeToInsertImagePreview) {
+          if (input.files) {
+            let filesAmount = input.files.length;
+            for (i = 0; i < filesAmount; i++) {
+              let reader = new FileReader();
+              reader.onload = function (event) {
+                $($.parseHTML("<img>"))
+                  .attr("src", event.target.result)
+                  .appendTo(placeToInsertImagePreview);
+              };
+              reader.readAsDataURL(input.files[i]);
+            }
+          }
+        };
+        $("#input-files").on("change", function () {
+          imagesPreview(this, "div.preview-images");
+        });
+      });
+
+      // auto-add coords
+      $('#geo').on('click', function(){
+        if ("geolocation" in navigator) {
+          var latInput = document.getElementById("latitude");
+          var longInput = document.getElementById("longitude");
+          $('.helper-text').innerText = "wait for your coords";
+            navigator.geolocation.getCurrentPosition(function (position) {
+            var lat = position.coords.latitude;
+            var long = position.coords.longitude;
+            latInput.value = lat;
+            longInput.value = long;
+          });
+        } else {
+          alert("Enable your browser geolocation");
+        }
+      });
+
+
+    </script>
+  </body>
+</html>
